@@ -1,0 +1,24 @@
+
+"SummaryContentStoryView.BuyButton.title" = "Купить билет!";
+
+"FutureStoryPreview.days" = "%ld";
+"Notification.title" = "Доступно новое путешествие!";
+
+"FutureStoryPreviewCell.subscribeButton.disabled" = "Напомнить";
+"FutureStoryPreviewCell.subscribeButton.enabled" = "Не напоминать";
+"FutureStoryPreviewCell.subscribeButton.failure" = "Повторить";
+
+"TurnOnNotificationsAlert.title" = "Включить подписки!";
+"TurnOnNotificationsAlert.message" = "Чтобы включить подписки разреши уведомления";
+"TurnOnNotificationsAlert.Button.cancel" = "Отмена";
+"TurnOnNotificationsAlert.Button.ok" = "Настройки";
+
+"Alert.Feedback.title" = "Это займет 1 минуту";
+"Alert.Feedback.message" = "Помогите улучшить наш сервис рекомендаций, ответив на несколько вопросов";
+"Alert.Feedback.Button.cancel" = "Не в этот раз";
+"Alert.Feedback.Button.ok" = "Да, давайте";
+
+"Alert.TurnOnNotifications.title" = "Включить подписки!";
+"Alert.TurnOnNotifications.message" = "Чтобы включить подписки разреши уведомления";
+"Alert.TurnOnNotifications.Button.cancel" = "Отмена";
+"Alert.TurnOnNotifications.Button.ok" = "Настройки";
