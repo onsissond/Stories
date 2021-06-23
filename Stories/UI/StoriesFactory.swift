@@ -47,6 +47,7 @@ private extension StoriesPreviewSystem.Environment {
             },
             currentDate: dependency.dateProvider,
             uuid: UUID.init,
+            calendar: { Calendar.current },
             notificationService: .live
         )
     }

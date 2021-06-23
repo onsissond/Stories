@@ -35,7 +35,7 @@ extension StoriesSystem {
         switch action {
         case .launchFeedback:
             state.feedbackAlert = nil
-            state.feedbackURL = URL(string: "www.google.com")!
+            state.feedbackURL = URL(string: "https://www.google.com")!
         case .launchedFeedback:
             state.feedbackURL = nil
         case .dismissFeedbackAlert:

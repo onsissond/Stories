@@ -8,12 +8,22 @@ import RxSwift
 
 final class FutureStoryPreviewCell: UICollectionViewCell {
     private lazy var _contentView: UIView = {
-        $0.backgroundColor = UIColor.blue
-            .withAlphaComponent(0.75)
+        $0.backgroundColor = UIColor(hex: 0xAFD4FF)
         $0.layer.cornerRadius = 10
         $0.layer.masksToBounds = true
         return $0
     }(UIView())
+
+    private lazy var _imageView: UIImageView = {
+        $0.contentMode = .scaleAspectFill
+        $0.layer.cornerRadius = 10
+        $0.layer.masksToBounds = true
+        return $0
+    }(UIImageView())
+
+    private lazy var _blurEffectView = UIVisualEffectView(
+        effect: UIBlurEffect(style: .dark)
+    )
 
     private lazy var _titleLabel: UILabel = {
         $0.textColor = .white
@@ -53,6 +63,24 @@ final class FutureStoryPreviewCell: UICollectionViewCell {
             _contentView.rightAnchor.constraint(equalTo: contentView.rightAnchor)
         ])
 
+        _contentView.addSubview(_imageView)
+        _imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            _imageView.topAnchor.constraint(equalTo: _contentView.topAnchor, constant: 2),
+            _imageView.leadingAnchor.constraint(equalTo: _contentView.leadingAnchor, constant: 2),
+            _imageView.trailingAnchor.constraint(equalTo: _contentView.trailingAnchor, constant: -2),
+            _imageView.bottomAnchor.constraint(equalTo: _contentView.bottomAnchor, constant: -2)
+        ])
+
+        _imageView.addSubview(_blurEffectView)
+        _blurEffectView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            _blurEffectView.topAnchor.constraint(equalTo: _imageView.topAnchor),
+            _blurEffectView.leadingAnchor.constraint(equalTo: _imageView.leadingAnchor),
+            _blurEffectView.trailingAnchor.constraint(equalTo: _imageView.trailingAnchor),
+            _blurEffectView.bottomAnchor.constraint(equalTo: _imageView.bottomAnchor)
+        ])
+
         _contentView.addSubview(_titleLabel)
         _titleLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -79,16 +107,19 @@ extension FutureStoryPreviewCell {
             case on
             case failure
         }
+        let imageURL: URL
         let subscriptionState: SubscriptionState
         let daysToFutureStory: Int
     }
 
     func render(viewState: ViewState) {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 5
-        let attrString = NSMutableAttributedString(string: L10n.FutureStoryPreview.days(viewState.daysToFutureStory))
-        attrString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attrString.length))
-        _titleLabel.attributedText = attrString
+        _imageView.kf.setImage(
+            with: viewState.imageURL,
+            options: [.transition(.fade(0.5))]
+        )
+        _titleLabel.attributedText = NSMutableAttributedString(
+            numberOfDays: viewState.daysToFutureStory
+        )
         _titleLabel.textAlignment = .center
 
         switch viewState.subscriptionState {
@@ -99,5 +130,20 @@ extension FutureStoryPreviewCell {
         case .failure:
             _subscribeLabel.text = L10n.FutureStoryPreviewCell.SubscribeButton.failure
         }
+    }
+}
+
+private extension NSMutableAttributedString {
+    convenience init(numberOfDays: Int) {
+        self.init(
+            string: L10n.FutureStoryPreview.days(numberOfDays)
+        )
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 5
+        addAttribute(
+            .paragraphStyle,
+            value: paragraphStyle,
+            range: NSRange(location: 0, length: length)
+        )
     }
 }

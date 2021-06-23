@@ -203,6 +203,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		529387112683ACAE00006692 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				52EB13CD2681BCDD00DEE57C /* StoryPreviewCell.swift */,
+				52EB13CE2681BCDD00DEE57C /* StoriesPreviewViewController.swift */,
+				52EB13CF2681BCDD00DEE57C /* FutureStoryPreviewCell.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
 		52EB13562681BC7D00DEE57C = {
 			isa = PBXGroup;
 			children = (
@@ -352,10 +362,8 @@
 		52EB13CC2681BCDD00DEE57C /* StoriesPreviewViewController */ = {
 			isa = PBXGroup;
 			children = (
+				529387112683ACAE00006692 /* UI */,
 				52F41CD82681CDE0009FA532 /* Entity */,
-				52EB13CD2681BCDD00DEE57C /* StoryPreviewCell.swift */,
-				52EB13CE2681BCDD00DEE57C /* StoriesPreviewViewController.swift */,
-				52EB13CF2681BCDD00DEE57C /* FutureStoryPreviewCell.swift */,
 				52F41CD62681CA89009FA532 /* StoriesPreviewSystem.swift */,
 			);
 			path = StoriesPreviewViewController;
@@ -579,6 +587,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1250;
+				ORGANIZATIONNAME = onsissond;
 				TargetAttributes = {
 					52EB135E2681BC7D00DEE57C = {
 						CreatedOnToolsVersion = 12.5;

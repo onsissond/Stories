@@ -173,7 +173,7 @@ extension StoriesPreviewViewController: UICollectionViewDelegateFlowLayout {
                 for: indexPath
             )
             if let cell = cell as? StoryPreviewCell {
-                cell.render(viewState: story.preview)
+                cell.render(viewState: .init(storyPreview: story.preview))
             }
             return cell
         case .future(let story):
@@ -230,6 +230,7 @@ private extension FutureStoryPreviewCell.ViewState {
         subscriptionState: StoriesPreviewSystem.SubscriptionState
     ) {
         self.init(
+            imageURL: futureStory.imageURL,
             subscriptionState: .init(subscriptionState: subscriptionState),
             daysToFutureStory: futureStory.daysToFutureStory
         )
@@ -243,5 +244,15 @@ private extension FutureStoryPreviewCell.ViewState.SubscriptionState {
         case .off: self = .off
         case .on: self = .on
         }
+    }
+}
+
+private extension StoryPreviewCell.ViewState {
+    init(storyPreview: RegularStoryPreview) {
+        self.init(
+            imageURL: storyPreview.imageURL,
+            title: storyPreview.title,
+            description: storyPreview.description
+        )
     }
 }

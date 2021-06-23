@@ -38,6 +38,7 @@ enum StoriesPreviewSystem {
         var fetchStories: () -> ComposableArchitecture.Effect<[Story]>
         var currentDate: () -> Date
         var uuid: () -> UUID
+        var calendar: () -> Calendar
         var notificationService: NotificationService
     }
 }
@@ -95,13 +96,16 @@ extension StoriesPreviewSystem {
             return .none
         case .setupFutureStories(let stories):
             state.futureStories = stories
-            if let nearestFutureStoryDate = state.futureStories
-                .first.map(\.publishDate) {
+            if let futureStory = state.futureStories
+                .first {
                 state.futureStory = .init(
+                    imageURL: futureStory.preview.imageURL,
                     daysToFutureStory: {
-                        let calendar = Calendar.current
-                        let components = calendar.dateComponents([.day], from: env.currentDate(), to: nearestFutureStoryDate)
-                        return components.day ?? 0
+                        env.calendar().dateComponents(
+                            [.day],
+                            from: env.currentDate(),
+                            to: futureStory.publishDate
+                        ).day ?? 0
                     }()
                 )
             }

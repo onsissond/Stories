@@ -34,8 +34,8 @@ struct FetchStoriesRequest: TargetType {
             "title": "Сочи",
             "subtitle": "Неделя за 50 000 ₽ на одного",
             "thumb": "https://firebasestorage.googleapis.com/v0/b/mobile-transport-app.appspot.com/o/story%2Fsochi%2F1.jpg?alt=media&token=d198093b-c8c6-44d5-9706-389ff7dbdca2",
-            "publishDate": "2021-03-21",
-            "expireDate": "2021-04-01",
+            "publishDate": "2021-05-21",
+            "expireDate": "2021-05-23",
             "pages": [
               {
                 "type": "regular",
@@ -80,7 +80,7 @@ struct FetchStoriesRequest: TargetType {
                   "title": "Когда",
                   "value": "27 мар - 1 апр"
                 },
-                "deeplink": "www.google.com",
+                "deeplink": "https://www.google.com",
                 "trip": {
                   "to": {
                     "type": "avia",
@@ -159,7 +159,7 @@ struct FetchStoriesRequest: TargetType {
                   "title": "Когда",
                   "value": "27-28 марта"
                 },
-                "deeplink": "www.google.com",
+                "deeplink": "https://www.google.com",
                 "trip": {
                   "to": {
                     "type": "train",
@@ -238,7 +238,7 @@ struct FetchStoriesRequest: TargetType {
                   "title": "Когда",
                   "value": "27 мар - 1 апр"
                 },
-                "deeplink": "www.google.com",
+                "deeplink": "https://www.google.com",
                 "trip": {
                   "to": {
                     "type": "avia",

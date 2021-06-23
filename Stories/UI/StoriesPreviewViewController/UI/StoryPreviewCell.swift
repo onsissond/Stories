@@ -93,12 +93,16 @@ final class StoryPreviewCell: UICollectionViewCell {
 }
 
 extension StoryPreviewCell {
-    func render(viewState: RegularStoryPreview) {
+    struct ViewState {
+        let imageURL: URL
+        let title: String
+        let description: String?
+    }
+
+    func render(viewState: ViewState) {
         _imageView.kf.setImage(
             with: viewState.imageURL,
-            options: [
-                .transition(.fade(0.5))
-            ]
+            options: [.transition(.fade(0.5))]
         )
         _titleLabel.text = viewState.title
         _descriptionLabel.text = viewState.description
