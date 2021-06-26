@@ -51,6 +51,7 @@ extension StoriesPreviewSystem.State {
         case story(Story)
         case future(FutureStory)
     }
+
     var dataSource: [Item] {
         stories.map(Item.story) +
             (futureStory.map(Item.future).map { [$0] } ?? [])
@@ -62,7 +63,8 @@ extension StoriesPreviewSystem {
         switch action {
         case .viewDidLoad:
             state.subscriptionState = env.notificationService
-                .loadStoriesSubscriptionStatus()
+                .notificationSettingsStorage
+                .loadSubscriptionStatus()
                 .map { .init($0, uuidProvider: env.uuid) }
                 ?? .off
             return env.fetchStories().map(Action.loadedStories)
@@ -97,41 +99,30 @@ extension StoriesPreviewSystem {
             switch state.subscriptionState {
             case .on:
                 state.subscriptionState = .off
-                env.notificationService.saveStoriesSubscriptionStatus(.off)
-                env.notificationService.removeStoryNotifications()
+                env.notificationService.notificationSettingsStorage
+                    .saveSubscriptionStatus(.off)
+                env.notificationService.notificationProvider
+                    .removeStoryNotifications()
             case .off, .failure:
-                env.notificationService.saveStoriesSubscriptionStatus(.on)
                 return .init(value: .setupNotification(.manual))
             }
             return .none
         case .setupNotification(let mode):
-            env.notificationService.removeStoryNotifications()
-            return Observable.just(state.futureStories)
-                .subscribeOn(SerialDispatchQueueScheduler(qos: .userInteractive))
-                .flatMap { futureStories in
-                    Observable.zip(
-                        futureStories
-                            .map(env.notificationService.setupNotification)
-                    )
-                }
-                .map { result -> StoriesPreviewSystem.SubscriptionState? in
-                    guard result.allSatisfy({ $0 == .success }) else {
-                        guard mode == .manual else {
-                            return nil
-                        }
-                        return .failure(env.uuid(), needShowAlert: true)
-                    }
-                    return .on
-                }
-                .filterNil()
-                .map(Action.setSubscriptionState)
-                .observeOn(MainScheduler.instance)
-                .eraseToEffect()
+            env.notificationService.notificationProvider.removeStoryNotifications()
+            return env.notificationService.notificationProvider.setupNotification(
+                state.futureStories
+            )
+            .map { result -> StoriesPreviewSystem.SubscriptionState? in
+                .init(result, mode: mode, uuidProvider: env.uuid)
+            }
+            .asObservable()
+            .filterNil()
+            .map(Action.setSubscriptionState)
+            .eraseToEffect()
         case .setSubscriptionState(let value):
             state.subscriptionState = value
-            env.notificationService.saveStoriesSubscriptionStatus(
-                .init(state: value)
-            )
+            env.notificationService.notificationSettingsStorage
+                .saveSubscriptionStatus(.init(state: value))
             return .none
         case .storiesAction:
             return .none
@@ -144,7 +135,25 @@ extension StoriesPreviewSystem {
     ))
 }
 
-extension StoriesSubscriptionStatus {
+private extension StoriesPreviewSystem.SubscriptionState {
+    init?(
+        _ result: NotificationProvider.SetupNotificationResult,
+        mode: StoriesPreviewSystem.SetupNotificationMode,
+        uuidProvider: () -> UUID
+    ) {
+        switch result {
+        case .success:
+            self = .on
+        case .failure:
+            guard mode == .manual else {
+                return nil
+            }
+            self = .failure(uuidProvider(), needShowAlert: true)
+        }
+    }
+}
+
+private extension NotificationSettingsStorage.StoriesSubscriptionStatus {
     init(state: StoriesPreviewSystem.SubscriptionState) {
         switch state {
         case .off: self = .off
@@ -156,7 +165,7 @@ extension StoriesSubscriptionStatus {
 
 private extension StoriesPreviewSystem.SubscriptionState {
     init(
-        _ storiesSubscriptionStatus: StoriesSubscriptionStatus,
+        _ storiesSubscriptionStatus: NotificationSettingsStorage.StoriesSubscriptionStatus,
         uuidProvider: () -> UUID
     ) {
         switch storiesSubscriptionStatus {

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		522CD9B12687379800488C57 /* StoriesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CD9B02687379800488C57 /* StoriesService.swift */; };
+		522CD9B42687437100488C57 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CD9B32687437100488C57 /* NotificationService.swift */; };
+		522CD9B62687439200488C57 /* NotificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CD9B52687439200488C57 /* NotificationProvider.swift */; };
 		52EB13632681BC7D00DEE57C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EB13622681BC7D00DEE57C /* AppDelegate.swift */; };
 		52EB13652681BC7D00DEE57C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EB13642681BC7D00DEE57C /* SceneDelegate.swift */; };
 		52EB136C2681BC8600DEE57C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52EB136B2681BC8600DEE57C /* Assets.xcassets */; };
@@ -23,7 +25,7 @@
 		52EB13EF2681BCDD00DEE57C /* StoryPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EB13BB2681BCDD00DEE57C /* StoryPreview.swift */; };
 		52EB13F02681BCDD00DEE57C /* StoryContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EB13BC2681BCDD00DEE57C /* StoryContent.swift */; };
 		52EB13F12681BCDD00DEE57C /* Story.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EB13BD2681BCDD00DEE57C /* Story.swift */; };
-		52EB13F22681BCDD00DEE57C /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EB13BF2681BCDD00DEE57C /* NotificationService.swift */; };
+		52EB13F22681BCDD00DEE57C /* NotificationSettingsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EB13BF2681BCDD00DEE57C /* NotificationSettingsStorage.swift */; };
 		52EB13F42681BCDD00DEE57C /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EB13C52681BCDD00DEE57C /* Strings.swift */; };
 		52EB13F52681BCDD00DEE57C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 52EB13C62681BCDD00DEE57C /* Localizable.strings */; };
 		52EB13F62681BCDD00DEE57C /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 52EB13C72681BCDD00DEE57C /* Localizable.stringsdict */; };
@@ -107,6 +109,8 @@
 
 /* Begin PBXFileReference section */
 		522CD9B02687379800488C57 /* StoriesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesService.swift; sourceTree = "<group>"; };
+		522CD9B32687437100488C57 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		522CD9B52687439200488C57 /* NotificationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationProvider.swift; sourceTree = "<group>"; };
 		52EB135F2681BC7D00DEE57C /* StoriesApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StoriesApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52EB13622681BC7D00DEE57C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		52EB13642681BC7D00DEE57C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -128,7 +132,7 @@
 		52EB13BB2681BCDD00DEE57C /* StoryPreview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryPreview.swift; sourceTree = "<group>"; };
 		52EB13BC2681BCDD00DEE57C /* StoryContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryContent.swift; sourceTree = "<group>"; };
 		52EB13BD2681BCDD00DEE57C /* Story.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Story.swift; sourceTree = "<group>"; };
-		52EB13BF2681BCDD00DEE57C /* NotificationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		52EB13BF2681BCDD00DEE57C /* NotificationSettingsStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationSettingsStorage.swift; sourceTree = "<group>"; };
 		52EB13C52681BCDD00DEE57C /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		52EB13C62681BCDD00DEE57C /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		52EB13C72681BCDD00DEE57C /* Localizable.stringsdict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.stringsdict; path = Localizable.stringsdict; sourceTree = "<group>"; };
@@ -205,6 +209,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		522CD9B22687436400488C57 /* NotificationService */ = {
+			isa = PBXGroup;
+			children = (
+				522CD9B32687437100488C57 /* NotificationService.swift */,
+				52EB13BF2681BCDD00DEE57C /* NotificationSettingsStorage.swift */,
+				522CD9B52687439200488C57 /* NotificationProvider.swift */,
+			);
+			path = NotificationService;
+			sourceTree = "<group>";
+		};
 		529387112683ACAE00006692 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -315,7 +329,7 @@
 		52EB13BE2681BCDD00DEE57C /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				52EB13BF2681BCDD00DEE57C /* NotificationService.swift */,
+				522CD9B22687436400488C57 /* NotificationService */,
 				522CD9B02687379800488C57 /* StoriesService.swift */,
 			);
 			path = Services;
@@ -723,9 +737,11 @@
 				52EB14112681BCDD00DEE57C /* LayoutAttributesAnimator.swift in Sources */,
 				52EB13FF2681BCDD00DEE57C /* SummaryContentStoryView.swift in Sources */,
 				52EB14022681BCDD00DEE57C /* SummaryFooterStoryView.swift in Sources */,
+				522CD9B62687439200488C57 /* NotificationProvider.swift in Sources */,
 				52EB13FC2681BCDD00DEE57C /* FutureStoryPreviewCell.swift in Sources */,
 				52EB14342681C66700DEE57C /* UIColor+Hex.swift in Sources */,
-				52EB13F22681BCDD00DEE57C /* NotificationService.swift in Sources */,
+				52EB13F22681BCDD00DEE57C /* NotificationSettingsStorage.swift in Sources */,
+				522CD9B42687437100488C57 /* NotificationService.swift in Sources */,
 				52EB13FE2681BCDD00DEE57C /* SummaryInfoDetailsStoryView.swift in Sources */,
 				52F41CD72681CA89009FA532 /* StoriesPreviewSystem.swift in Sources */,
 				52EB14092681BCDD00DEE57C /* InstaProgressView.swift in Sources */,
