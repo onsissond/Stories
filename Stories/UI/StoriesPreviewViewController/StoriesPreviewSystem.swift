@@ -27,8 +27,7 @@ enum StoriesPreviewSystem {
     }
     enum Action: Equatable {
         case viewDidLoad
-        case loadedStories([Story])
-        case setupActiveStories([Story])
+        case loadedStories(Stories)
         case setupFutureStories([Story])
         case switchNotifications
         case openStories(index: Int)
@@ -38,7 +37,7 @@ enum StoriesPreviewSystem {
         case storiesAction(StoriesSystem.Action)
     }
     struct Environment {
-        var fetchStories: () -> ComposableArchitecture.Effect<[Story]>
+        var fetchStories: () -> Effect<Stories>
         var currentDate: () -> Date
         var uuid: () -> UUID
         var calendar: () -> Calendar
@@ -64,66 +63,30 @@ extension StoriesPreviewSystem {
         case .viewDidLoad:
             state.subscriptionState = env.notificationService
                 .loadStoriesSubscriptionStatus()
-                .map {
-                    switch $0 {
-                    case .on: return .on
-                    case .off: return .off
-                    case .failure: return .failure(env.uuid(), needShowAlert: false)
-                    }
-                } ?? .off
+                .map { .init($0, uuidProvider: env.uuid) }
+                ?? .off
             return env.fetchStories().map(Action.loadedStories)
         case .loadedStories(let stories):
-            return .merge(
-                Observable.just((stories, env.currentDate()))
-                    .subscribeOn(SerialDispatchQueueScheduler(qos: .userInteractive))
-                    .map { (stories, currentDate) in
-                        stories.filter { story in
-                            story.publishDate < currentDate &&
-                                story.expireDate > currentDate
-                        }
-                    }
-                    .map(Action.setupActiveStories)
-                    .observeOn(MainScheduler.instance)
-                    .eraseToEffect(),
-                Observable.just((stories, env.currentDate()))
-                    .subscribeOn(SerialDispatchQueueScheduler(qos: .userInteractive))
-                    .map { (stories, currentDate) in
-                        stories.filter { $0.publishDate > env.currentDate() }
-                            .sorted { $0.publishDate < $1.publishDate }
-                    }
-                    .map(Action.setupFutureStories)
-                    .observeOn(MainScheduler.instance)
-                    .eraseToEffect()
-            )
+            state.stories = stories.activeStories
+            return .init(value: .setupFutureStories(stories.futureStories))
         case .openStories(let index):
             state.storiesState = .init(
                 stories: state.stories,
                 currentStory: index
             )
             return .none
-        case .setupActiveStories(let stories):
-            state.stories = stories
-            return .none
         case .setupFutureStories(let stories):
             state.futureStories = stories
-            if let futureStory = state.futureStories
-                .first {
-                state.futureStory = .init(
-                    imageURL: futureStory.preview.imageURL,
-                    daysToFutureStory: {
-                        env.calendar().dateComponents(
-                            [.day],
-                            from: env.currentDate(),
-                            to: futureStory.publishDate
-                        ).day ?? 0
-                    }()
+            state.futureStory = state.futureStories.first.map {
+                .init(
+                    story: $0,
+                    calendar: env.calendar(),
+                    currentDate: env.currentDate()
                 )
             }
             switch state.subscriptionState {
-            case .on:
-                return .init(value: .setupNotification(.automatic))
-            case .off, .failure:
-                return .none
+            case .on: return .init(value: .setupNotification(.automatic))
+            case .off, .failure: return .none
             }
         case .openSettings:
             env.storiesEnvironment.storyEnvironment.openURL(
@@ -188,5 +151,36 @@ extension StoriesSubscriptionStatus {
         case .on: self = .on
         case .failure: self = .failure
         }
+    }
+}
+
+private extension StoriesPreviewSystem.SubscriptionState {
+    init(
+        _ storiesSubscriptionStatus: StoriesSubscriptionStatus,
+        uuidProvider: () -> UUID
+    ) {
+        switch storiesSubscriptionStatus {
+        case .on:
+            self = .on
+        case .off:
+            self = .off
+        case .failure:
+            self = .failure(uuidProvider(), needShowAlert: false)
+        }
+    }
+}
+
+private extension FutureStory {
+    init(story: Story, calendar: Calendar, currentDate: Date) {
+        self.init(
+            imageURL: story.preview.imageURL,
+            daysToFutureStory: {
+                calendar.dateComponents(
+                    [.day],
+                    from: currentDate,
+                    to: story.publishDate
+                ).day ?? 0
+            }()
+        )
     }
 }

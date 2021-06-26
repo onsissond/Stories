@@ -12,7 +12,7 @@ public enum StoriesFactory {
         var openURL: (URL) -> Void
 
         public init(
-            httpClient: HTTPClient = .mock,
+            httpClient: HTTPClient,
             dateProvider: @escaping () -> Date,
             openURL: @escaping (URL) -> Void
         ) {
@@ -42,9 +42,11 @@ private extension StoriesPreviewSystem.Environment {
     init(
         dependency: StoriesFactory.Dependency
     ) {
+        let storiesService = StoriesService.live
+        let fetchStories = storiesService.fetchStories(dependency.httpClient)
         self.init(
             fetchStories: {
-                dependency.httpClient.fetchStories()
+                fetchStories(dependency.dateProvider())
                     .asObservable()
                     .eraseToEffect()
             },

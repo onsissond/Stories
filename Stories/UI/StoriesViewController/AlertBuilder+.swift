@@ -1,5 +1,5 @@
 //
-// Copyright © 2021 LLC "Globus Media". All rights reserved.
+//  Created by onsissond.
 //
 
 import ComposableArchitecture

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		522CD9B12687379800488C57 /* StoriesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CD9B02687379800488C57 /* StoriesService.swift */; };
 		52EB13632681BC7D00DEE57C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EB13622681BC7D00DEE57C /* AppDelegate.swift */; };
 		52EB13652681BC7D00DEE57C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52EB13642681BC7D00DEE57C /* SceneDelegate.swift */; };
 		52EB136C2681BC8600DEE57C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52EB136B2681BC8600DEE57C /* Assets.xcassets */; };
@@ -105,6 +106,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		522CD9B02687379800488C57 /* StoriesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesService.swift; sourceTree = "<group>"; };
 		52EB135F2681BC7D00DEE57C /* StoriesApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StoriesApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52EB13622681BC7D00DEE57C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		52EB13642681BC7D00DEE57C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -314,6 +316,7 @@
 			isa = PBXGroup;
 			children = (
 				52EB13BF2681BCDD00DEE57C /* NotificationService.swift */,
+				522CD9B02687379800488C57 /* StoriesService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -732,6 +735,7 @@
 				52EB13EC2681BCDD00DEE57C /* FetchStories.swift in Sources */,
 				52EB13FA2681BCDD00DEE57C /* StoryPreviewCell.swift in Sources */,
 				52EB14042681BCDD00DEE57C /* StoryGradient.swift in Sources */,
+				522CD9B12687379800488C57 /* StoriesService.swift in Sources */,
 				52EB142C2681C20600DEE57C /* HTTPClient.swift in Sources */,
 				52EB14002681BCDD00DEE57C /* SummaryHeaderStoryView.swift in Sources */,
 				52EB14052681BCDD00DEE57C /* RegularContentStoryView.swift in Sources */,

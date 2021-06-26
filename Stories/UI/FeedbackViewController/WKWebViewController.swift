@@ -1,5 +1,5 @@
 //
-// Copyright © 2019 LLC "Globus Media". All rights reserved.
+//  Created by onsissond.
 //
 
 import RxSwift

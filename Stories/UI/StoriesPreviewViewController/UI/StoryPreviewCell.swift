@@ -88,7 +88,6 @@ final class StoryPreviewCell: UICollectionViewCell {
             _descriptionLabel.trailingAnchor.constraint(equalTo: _contentView.trailingAnchor, constant: -8),
             _descriptionLabel.bottomAnchor.constraint(equalTo: _contentView.bottomAnchor, constant: -8)
         ])
-
     }
 }
 
