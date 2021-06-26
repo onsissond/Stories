@@ -42,10 +42,14 @@ enum StorySystem {
         case openDeepLink(URL)
         case requestFeedback
     }
+
+    struct Environment {
+        var openURL: (URL) -> Void
+    }
 }
 
 extension StorySystem {
-    static var reducer = Reducer<State, Action, Void> { state, action, _ in
+    static var reducer = Reducer<State, Action, Environment> { state, action, env in
         switch action {
         case .nextPage:
             if state.currentPage == state.story.content.count - 1 {
@@ -79,13 +83,13 @@ extension StorySystem {
                 .map { _ in .initial }
         case .finish:
             state.progressState.progress[state.currentPage] = .finish
-        case .pause:
+        case .pause, .requestFeedback:
             state.progressState.progress[state.currentPage] = .pause
         case .continue:
             state.progressState.progress[state.currentPage] = .continue
         case let .openDeepLink(url):
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        case .nextStory, .previousStory, .dismiss, .requestFeedback:
+            env.openURL(url)
+        case .nextStory, .previousStory, .dismiss:
             break
         }
         return .none

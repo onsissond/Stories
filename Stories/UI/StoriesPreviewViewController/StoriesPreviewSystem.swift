@@ -19,6 +19,7 @@ enum StoriesPreviewSystem {
         case automatic
     }
     struct State: Equatable {
+        var storiesState: StoriesSystem.State?
         var stories: [Story] = []
         var futureStories: [Story] = []
         var futureStory: FutureStory?
@@ -29,10 +30,12 @@ enum StoriesPreviewSystem {
         case loadedStories([Story])
         case setupActiveStories([Story])
         case setupFutureStories([Story])
-        case storesAction(StoriesSystem.Action)
         case switchNotifications
+        case openStories(index: Int)
+        case openSettings
         case setSubscriptionState(SubscriptionState)
         case setupNotification(SetupNotificationMode)
+        case storiesAction(StoriesSystem.Action)
     }
     struct Environment {
         var fetchStories: () -> ComposableArchitecture.Effect<[Story]>
@@ -40,6 +43,7 @@ enum StoriesPreviewSystem {
         var uuid: () -> UUID
         var calendar: () -> Calendar
         var notificationService: NotificationService
+        var storiesEnvironment: StoriesSystem.Environment
     }
 }
 
@@ -91,6 +95,12 @@ extension StoriesPreviewSystem {
                     .observeOn(MainScheduler.instance)
                     .eraseToEffect()
             )
+        case .openStories(let index):
+            state.storiesState = .init(
+                stories: state.stories,
+                currentStory: index
+            )
+            return .none
         case .setupActiveStories(let stories):
             state.stories = stories
             return .none
@@ -115,6 +125,11 @@ extension StoriesPreviewSystem {
             case .off, .failure:
                 return .none
             }
+        case .openSettings:
+            env.storiesEnvironment.storyEnvironment.openURL(
+                URL(string: UIApplication.openSettingsURLString)!
+            )
+            return .none
         case .switchNotifications:
             switch state.subscriptionState {
             case .on:
@@ -155,10 +170,15 @@ extension StoriesPreviewSystem {
                 .init(state: value)
             )
             return .none
-        case .storesAction:
+        case .storiesAction:
             return .none
         }
     }
+    .combined(with: StoriesSystem.reducer.optional().pullback(
+        state: \.storiesState,
+        action: /Action.storiesAction,
+        environment: \.storiesEnvironment
+    ))
 }
 
 extension StoriesSubscriptionStatus {

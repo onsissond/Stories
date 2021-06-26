@@ -17,7 +17,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
         window?.rootViewController = StoriesFactory.create(dependency: .init(
-            dateProvider: { Date.mock("2021-03-28", dateFormat: "yyyy-MM-dd")! }
+            dateProvider: { Date.mock("2021-03-28", dateFormat: "yyyy-MM-dd")! },
+            openURL: { UIApplication.shared.open($0) } 
         ), payload: Void())
         window?.makeKeyAndVisible()
     }

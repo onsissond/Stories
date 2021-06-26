@@ -10,16 +10,11 @@ enum StoriesSystem {
     typealias LocalStore = Store<State, Action>
 
     struct State: Equatable {
-        var stories: [StorySystem.State]
+        var stories: [StorySystem.State] = []
         var currentStory = 0
         var dismiss = false
         var feedbackAlert: AlertState<Action>?
         var feedbackURL: URL?
-
-        init(stories: [Story], currentStory: Int) {
-            self.stories = stories.map(StorySystem.State.init)
-            self.currentStory = currentStory
-        }
     }
 
     enum Action: Equatable {
@@ -28,18 +23,37 @@ enum StoriesSystem {
         case launchedFeedback
         case dismissFeedbackAlert
     }
+
+    struct Environment {
+        var storyEnvironment: StorySystem.Environment
+    }
+}
+
+extension StoriesSystem.State {
+    init(stories: [Story], currentStory: Int) {
+        self.stories = stories.map(StorySystem.State.init)
+        self.currentStory = currentStory
+    }
 }
 
 extension StoriesSystem {
-    static var reducer = ComposableArchitecture.Reducer<State, Action, Void> { state, action, _ in
+    static var reducer = Reducer<State, Action, Environment> { state, action, _ in
         switch action {
         case .launchFeedback:
             state.feedbackAlert = nil
             state.feedbackURL = URL(string: "https://www.google.com")!
+            return .init(value: .storyAction(
+                storyIndex: state.currentStory,
+                action: .pause
+            ))
         case .launchedFeedback:
             state.feedbackURL = nil
         case .dismissFeedbackAlert:
             state.feedbackAlert = nil
+            return .init(value: .storyAction(
+                storyIndex: state.currentStory,
+                action: .continue
+            ))
         case let .storyAction(index, .previousStory):
             if index - 1 >= 0 {
                 state.currentStory = index - 1
@@ -73,7 +87,7 @@ extension StoriesSystem {
         with: StorySystem.reducer.forEach(
             state: \.stories,
             action: /StoriesSystem.Action.storyAction,
-            environment: { _ in }
+            environment: \.storyEnvironment
         )
     )
 }

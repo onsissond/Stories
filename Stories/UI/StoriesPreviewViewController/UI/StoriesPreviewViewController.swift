@@ -89,6 +89,22 @@ class StoriesPreviewViewController: UIViewController {
                 }
             })
             .disposed(by: _disposeBag)
+
+        _viewStore.publisher.map(\.storiesState)
+            .map { $0 != nil }
+            .distinctUntilChanged()
+            .filter { $0 }
+            .bind(onNext: { [weak self] storiesState in
+                guard let self = self else { return }
+                self.present(
+                    StoriesViewController(store: self._store.scope(
+                        state: { $0.storiesState! },
+                        action: StoriesPreviewSystem.Action.storiesAction
+                    )),
+                    animated: true
+                )
+            })
+            .disposed(by: _disposeBag)
     }
 
     private func _setupAppearence() {
@@ -103,7 +119,7 @@ class StoriesPreviewViewController: UIViewController {
             _collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             _collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             _collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            _collectionView.heightAnchor.constraint(equalToConstant: 200)
+            _collectionView.heightAnchor.constraint(equalToConstant: 140)
         ])
     }
 
@@ -113,10 +129,8 @@ class StoriesPreviewViewController: UIViewController {
                 .with(title: L10n.Alert.TurnOnNotifications.title)
                 .with(message: L10n.Alert.TurnOnNotifications.message)
                 .withAction(title: L10n.Alert.TurnOnNotifications.Button.cancel)
-                .withAction(title: L10n.Alert.TurnOnNotifications.Button.ok, isPreffered: true) {
-                    UIApplication.shared.open(
-                        URL(string: UIApplication.openSettingsURLString)!
-                    )
+                .withAction(title: L10n.Alert.TurnOnNotifications.Button.ok, isPreffered: true) { [weak self] in
+                    self?._viewStore.send(.openSettings)
                 }
                 .build(),
             animated: true
@@ -144,17 +158,7 @@ extension StoriesPreviewViewController: UICollectionViewDelegate {
     ) {
         switch _store.state.dataSource[indexPath.row] {
         case .story:
-            present(
-                StoriesViewController(store: .init(
-                    initialState: .init(
-                        stories: _store.state.stories,
-                        currentStory: indexPath.row
-                    ),
-                    reducer: StoriesSystem.reducer,
-                    environment: ()
-                )),
-                animated: true
-            )
+            _viewStore.send(.openStories(index: indexPath.row))
         case .future:
             _viewStore.send(.switchNotifications)
         }
@@ -196,7 +200,10 @@ extension StoriesPreviewViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        CGSize(width: 112, height: 142)
+        CGSize(
+            width: collectionView.contentSize.height * 0.8,
+            height: collectionView.contentSize.height
+        )
     }
 
     func collectionView(

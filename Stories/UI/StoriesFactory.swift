@@ -9,13 +9,16 @@ public enum StoriesFactory {
     public struct Dependency {
         var httpClient: HTTPClient
         var dateProvider: () -> Date
+        var openURL: (URL) -> Void
 
         public init(
             httpClient: HTTPClient = .mock,
-            dateProvider: @escaping () -> Date
+            dateProvider: @escaping () -> Date,
+            openURL: @escaping (URL) -> Void
         ) {
             self.httpClient = httpClient
             self.dateProvider = dateProvider
+            self.openURL = openURL
         }
     }
 
@@ -48,7 +51,12 @@ private extension StoriesPreviewSystem.Environment {
             currentDate: dependency.dateProvider,
             uuid: UUID.init,
             calendar: { Calendar.current },
-            notificationService: .live
+            notificationService: .live,
+            storiesEnvironment: .init(
+                storyEnvironment: .init(
+                    openURL: dependency.openURL
+                )
+            )
         )
     }
 }

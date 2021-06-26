@@ -101,6 +101,7 @@ class StoriesViewController: UIViewController {
             .filterNil()
             .bind(onNext: { [weak self] in
                 let webView = WKWebViewController()
+                webView.presentationController?.delegate = self
                 webView.render(viewState: $0)
                 self?.present(webView, animated: true, completion: {
                     self?._viewStore.send(.launchedFeedback)
@@ -254,6 +255,17 @@ extension StoriesViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+extension StoriesViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(
+        _ presentationController: UIPresentationController
+    ) {
+        _viewStore.send(.storyAction(
+            storyIndex: _viewStore.state.currentStory,
+            action: .continue
+        ))
+    }
+}
+
 extension AlertState where Action == StoriesSystem.Action {
     static var feedback = AlertState<StoriesSystem.Action>(
         title: L10n.Alert.Feedback.title,
@@ -268,3 +280,4 @@ extension AlertState where Action == StoriesSystem.Action {
         )
     )
 }
+
