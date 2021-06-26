@@ -32,6 +32,7 @@ enum StoriesPreviewSystem {
         case switchNotifications
         case openStories(index: Int)
         case openSettings
+        case dismissStories
         case setSubscriptionState(SubscriptionState)
         case setupNotification(SetupNotificationMode)
         case storiesAction(StoriesSystem.Action)
@@ -124,6 +125,13 @@ extension StoriesPreviewSystem {
             env.notificationService.notificationSettingsStorage
                 .saveSubscriptionStatus(.init(state: value))
             return .none
+        case .dismissStories:
+            state.storiesState = nil
+            return .none
+        case .storiesAction(.storyAction(_, .dismiss)):
+            return Observable.just(())
+                .map { .dismissStories }
+                .eraseToEffect()
         case .storiesAction:
             return .none
         }

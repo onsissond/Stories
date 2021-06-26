@@ -74,8 +74,6 @@ extension StoriesSystem {
             } else {
                 return Effect(value: .storyAction(storyIndex: index, action: .finish))
             }
-        case .storyAction(_, .dismiss):
-            state.dismiss = true
         case .storyAction(_, .requestFeedback):
             state.feedbackAlert = .feedback
         case .storyAction:

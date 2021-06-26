@@ -75,13 +75,6 @@ class StoriesViewController: UIViewController {
             })
             .disposed(by: _disposeBag)
 
-        _viewStore.publisher.map(\.dismiss)
-            .filter { $0 }
-            .bind(onNext: { [weak self] _ in
-                self?.dismiss(animated: true, completion: nil)
-            })
-            .disposed(by: _disposeBag)
-
         _viewStore.publisher.map(\.feedbackAlert)
             .distinctUntilChanged()
             .filterNil()
@@ -183,7 +176,10 @@ extension StoriesViewController {
                         ))
                     })
             } else {
-                dismiss(animated: true, completion: nil)
+                _viewStore.send(.storyAction(
+                    storyIndex: _viewStore.currentStory,
+                    action: .dismiss
+                ))
             }
         default:
             break

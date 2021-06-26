@@ -15,6 +15,7 @@ class StoriesPreviewViewController: UIViewController {
     private let _store: StoriesPreviewSystem.LocalStore
     private let _disposeBag = DisposeBag()
     private lazy var _viewStore = ViewStore(_store)
+    private weak var _presentedVC: UIViewController?
 
     private lazy var _collectionView: UICollectionView = {
         $0.contentInset = .init(top: 4, left: 16, bottom: 4, right: 16)
@@ -90,21 +91,17 @@ class StoriesPreviewViewController: UIViewController {
             })
             .disposed(by: _disposeBag)
 
-        _viewStore.publisher.map(\.storiesState)
-            .map { $0 != nil }
-            .distinctUntilChanged()
-            .filter { $0 }
-            .bind(onNext: { [weak self] storiesState in
-                guard let self = self else { return }
-                self.present(
-                    StoriesViewController(store: self._store.scope(
-                        state: { $0.storiesState! },
-                        action: StoriesPreviewSystem.Action.storiesAction
-                    )),
-                    animated: true
-                )
-            })
-            .disposed(by: _disposeBag)
+        _store.scope(
+            state: \.storiesState,
+            action: StoriesPreviewSystem.Action.storiesAction
+        ).ifLet(then: { [weak self] in
+            let vc = StoriesViewController(store: $0)
+            self?._presentedVC = vc
+            self?.present(vc, animated: true)
+        }, else: { [weak self] in
+            self?._presentedVC?.dismiss(animated: true, completion: nil)
+        })
+        .disposed(by: _disposeBag)
     }
 
     private func _setupAppearence() {
@@ -119,7 +116,7 @@ class StoriesPreviewViewController: UIViewController {
             _collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             _collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             _collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            _collectionView.heightAnchor.constraint(equalToConstant: 140)
+            _collectionView.heightAnchor.constraint(equalToConstant: 150)
         ])
     }
 
@@ -129,7 +126,10 @@ class StoriesPreviewViewController: UIViewController {
                 .with(title: L10n.Alert.TurnOnNotifications.title)
                 .with(message: L10n.Alert.TurnOnNotifications.message)
                 .withAction(title: L10n.Alert.TurnOnNotifications.Button.cancel)
-                .withAction(title: L10n.Alert.TurnOnNotifications.Button.ok, isPreffered: true) { [weak self] in
+                .withAction(
+                    title: L10n.Alert.TurnOnNotifications.Button.ok,
+                    isPreffered: true
+                ) { [weak self] in
                     self?._viewStore.send(.openSettings)
                 }
                 .build(),
